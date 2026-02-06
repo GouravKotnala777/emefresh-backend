@@ -46,3 +46,12 @@ export async function login(req:Request<{}, {}, UserTypesBody, {}>, res:Response
         next(error);
     }
 };
+export async function getAllUsers(req:Request<{}, {}, UserTypesBody, {}>, res:Response, next:NextFunction) {
+    try {
+        const allUsers = await Users.find();
+        sendResponse(res, 200, "", allUsers);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
