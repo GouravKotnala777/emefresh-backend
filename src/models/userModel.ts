@@ -1,0 +1,52 @@
+import mongoose, { Model, Models } from "mongoose";
+import bcryptjs from "bcryptjs";
+
+export interface UserTypes {
+    _id:mongoose.Schema.Types.ObjectId;
+    name:string;
+    email:string;
+    password:string;
+    role:"user"|"admin";
+    isVarified:boolean;
+    varificationToken:string;
+    avatar?:string;
+    createdAt:string;
+    updatedAt:string;
+};
+export interface UserTypesBody {
+    name:string;
+    email:string;
+    password:string;
+    varificationToken:string;
+};
+
+const userSchema = new mongoose.Schema<UserTypes>({
+    name:{type:String, required:true},
+    email:{type:String, unique:true, required:true},
+    password:{type:String, required:true},
+    role:{type:String, enum:["user","admin"], default:"user"},
+    isVarified:{type:Boolean, default:false},
+    varificationToken:{type:String, default:null},
+    avatar:{type:String, default:null}
+}, {timestamps:true});
+
+userSchema.pre("save", async function() {
+    try {
+        const originalPassword = this.password;
+        const BCRYPTJS_SALT = process.env.BCRYPTJS_SALT;
+        if (!BCRYPTJS_SALT) {
+            throw Error("BCRYPTJS_SALT is undefined");
+        }
+        const saltRounds = parseInt(BCRYPTJS_SALT, 7);
+        const hashPassword = await bcryptjs.hash(originalPassword, saltRounds);
+        this.password = hashPassword;
+        return hashPassword;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+})
+
+const userModel:Model<UserTypes> = mongoose.models.User || mongoose.model<UserTypes>("User", userSchema);
+
+export default userModel;
