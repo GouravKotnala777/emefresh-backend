@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Users, { UserTypesBody } from "../models/userModel.js";
-import { isPasswordMatched, sendResponse } from "../utils/functions.js";
+import { generateToken, isPasswordMatched, sendResponse } from "../utils/functions.js";
 import { ErrorHandler } from "../utils/classes.js";
 
 
@@ -32,14 +32,18 @@ export async function login(req:Request<{}, {}, UserTypesBody, {}>, res:Response
         
         if (!email || !password) return next(new ErrorHandler(`all fields are required ${JSON.stringify({email, password})}`, 400));        
 
-        const existingUser = await Users.findOne({email});
+        const existingUser = await Users.findOne({email}).select("+password");
 
         if (!existingUser) return next(new ErrorHandler("user not found 1", 404));
 
         const isMatched = await isPasswordMatched(password, existingUser.password);
 
         if (!isMatched) return next(new ErrorHandler("user not found 2", 404));
+        const token = await generateToken(existingUser._id, next);
 
+        console.log({token});
+
+        res.cookie("token", token, {httpOnly:false, secure:false});
         sendResponse(res, 201, "", existingUser);
     } catch (error) {
         console.log(error);
@@ -49,6 +53,7 @@ export async function login(req:Request<{}, {}, UserTypesBody, {}>, res:Response
 export async function getAllUsers(req:Request<{}, {}, UserTypesBody, {}>, res:Response, next:NextFunction) {
     try {
         const allUsers = await Users.find();
+        
         sendResponse(res, 200, "", allUsers);
     } catch (error) {
         console.log(error);
