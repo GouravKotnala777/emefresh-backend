@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import Users, { UserTypesBody } from "../models/userModel.js";
+import Users, { RegisterBodyTypes, LoginBodyTypes } from "../models/userModel.js";
 import { generateToken, isPasswordMatched, sendResponse } from "../utils/functions.js";
 import { ErrorHandler } from "../utils/classes.js";
+import { AuthRequest } from "../middlewares/auth.js";
 
 
-export async function register(req:Request<{}, {}, UserTypesBody, {}>, res:Response, next:NextFunction) {
+export async function register(req:Request<{}, {}, RegisterBodyTypes, {}>, res:Response, next:NextFunction) {
     try {
         const {name, email, password} = req.body;
 
@@ -26,7 +27,7 @@ export async function register(req:Request<{}, {}, UserTypesBody, {}>, res:Respo
         next(error);
     }
 };
-export async function login(req:Request<{}, {}, UserTypesBody, {}>, res:Response, next:NextFunction) {
+export async function login(req:Request<{}, {}, LoginBodyTypes, {}>, res:Response, next:NextFunction) {
     try {
         const {email, password} = req.body;
         
@@ -50,11 +51,23 @@ export async function login(req:Request<{}, {}, UserTypesBody, {}>, res:Response
         next(error);
     }
 };
-export async function getAllUsers(req:Request<{}, {}, UserTypesBody, {}>, res:Response, next:NextFunction) {
+export async function getAllUsers(req:Request, res:Response, next:NextFunction) {
     try {
         const allUsers = await Users.find();
         
         sendResponse(res, 200, "", allUsers);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+export async function myProfile(req:Request, res:Response, next:NextFunction) {
+    try {
+        const loggedInUserID = (req as AuthRequest).user._id;
+
+        const user = await Users.findById(loggedInUserID);
+        
+        sendResponse(res, 200, "", user);
     } catch (error) {
         console.log(error);
         next(error);

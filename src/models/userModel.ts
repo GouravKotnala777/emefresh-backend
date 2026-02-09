@@ -13,12 +13,8 @@ export interface UserTypes {
     createdAt:string;
     updatedAt:string;
 };
-export interface UserTypesBody {
-    name:string;
-    email:string;
-    password:string;
-    varificationToken:string;
-};
+export type RegisterBodyTypes = Pick<UserTypes, "name"|"email"|"password">;
+export type LoginBodyTypes = Pick<UserTypes, "email"|"password">;
 
 const userSchema = new mongoose.Schema<UserTypes>({
     name:{type:String, required:true},
