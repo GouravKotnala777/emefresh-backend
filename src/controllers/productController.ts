@@ -4,6 +4,16 @@ import { ErrorHandler } from "../utils/classes.js";
 import { sendResponse } from "../utils/functions.js";
 
 
+export async function allProducts(req:Request, res:Response, next:NextFunction) {
+    try {
+        const allProducts = await Product.find();
+
+        sendResponse(res, 200, "", allProducts);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
 export async function createProduct(req:Request<{}, {}, CreateProductBodyTypes, {}>, res:Response, next:NextFunction) {
     try {
         const {name, price, description, category, weight, volume, tag} = req.body;
