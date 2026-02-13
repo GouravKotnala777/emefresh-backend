@@ -17,8 +17,8 @@ export async function allProducts(req:Request, res:Response, next:NextFunction) 
 export async function createProduct(req:Request<{}, {}, CreateProductBodyTypes, {}>, res:Response, next:NextFunction) {
     try {
         const {name, price, description, category, weight, volume, tag} = req.body;
-
-        if (!name || !price || !description || !category || !weight || !volume || !tag) return next(new ErrorHandler("all fields are required", 400));
+              
+        if (!name || !price || !description || !category || !tag) return next(new ErrorHandler("all fields are required", 400));
 
         const existingProduct = await Product.findOne({name});
 
