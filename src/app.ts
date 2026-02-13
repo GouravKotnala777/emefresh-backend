@@ -2,6 +2,7 @@ import express from "express";
 import connectDatabase from "./config/db.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import cors from "cors";
 
 dotenv.config();
 
@@ -15,6 +16,11 @@ connectDatabase(DATABASE_URI);
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+    methods:["GET", "POST", "PUT", "Patch", "DELETE"],
+    credentials:true,
+    origin:process.env.CLIENT_URI
+}));
 
 
 app.listen(PORT,() => {
