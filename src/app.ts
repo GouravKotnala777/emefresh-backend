@@ -9,6 +9,8 @@ dotenv.config();
 const app = express();
 const PORT = 8000;
 const DATABASE_URI = process.env.DATABASE_URI;
+const allowOrigins = process.env.CLIENT_URL;
+
 
 
 connectDatabase(DATABASE_URI);
@@ -17,9 +19,9 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    methods:["GET", "POST", "PUT", "Patch", "DELETE"],
-    credentials:true,
-    origin:process.env.CLIENT_URI
+    origin:allowOrigins?.split(","),
+    methods:["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials:true
 }));
 
 
