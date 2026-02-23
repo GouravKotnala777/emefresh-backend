@@ -7,7 +7,8 @@ export interface ProductTypes {
     category:"fresh"|"juice"|"frozen"|"smoothie";
     tag:string[];
     description?: string;
-    images?: string[];
+    image?: string;
+    previewImages?: string[];
     stock?: number;
     weight?: string;
     volume?: string;
@@ -38,7 +39,8 @@ const productSchema = new mongoose.Schema<ProductTypes>({
       enum: ["fresh", "juice", "frozen", "smoothie"],
     },
     description: { type: String },
-    images: [{ type: String }],
+    image: { type: String },
+    previewImages: [{ type: String }],
     price: { type: Number, required: true },
     stock: { type: Number, default: 0 },
     weight: { type: String },
