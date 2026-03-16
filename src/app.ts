@@ -9,9 +9,7 @@ dotenv.config();
 const app = express();
 const PORT = 8000;
 const DATABASE_URI = process.env.DATABASE_URI;
-const allowOrigins = process.env.CLIENT_URL;
-
-
+const allowOrigins = process.env.CLIENT_URI;
 
 connectDatabase(DATABASE_URI);
 
