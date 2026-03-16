@@ -30,6 +30,7 @@ export interface ProductTypes {
     returnCount:number;
 };
 export type CreateProductBodyTypes = Pick<ProductTypes, "name"|"price"|"description"|"category"|"weight"|"volume"|"tag">
+export type UpdateProductBodyTypes = Partial<Pick<ProductTypes, "name"|"price"|"description"|"category"|"weight"|"volume"|"stock">>&{tag?:string; warning?:string;};
 
 const productSchema = new mongoose.Schema<ProductTypes>({
     name: { type: String, required: true, trim: true },
