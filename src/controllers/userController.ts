@@ -9,7 +9,7 @@ export async function register(req:Request<{}, {}, RegisterBodyTypes, {}>, res:R
     try {
         const {name, email, password} = req.body;
 
-        if (name || email || password) return next(new ErrorHandler(`all fields are required ${JSON.stringify({name, email, password})}`, 400));
+        if (!name || !email || !password) return next(new ErrorHandler(`all fields are required ${JSON.stringify({name, email, password})}`, 400));
         
         const existingUser = await Users.findOne({email});        
 

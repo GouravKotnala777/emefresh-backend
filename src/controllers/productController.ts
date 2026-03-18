@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import Product, { CreateProductBodyTypes, UpdateProductBodyTypes } from "../models/productModel.js";
 import { ErrorHandler } from "../utils/classes.js";
 import { sendResponse } from "../utils/functions.js";
-import { Multer } from "multer";
 
 
 export async function allProducts(req:Request, res:Response, next:NextFunction) {
