@@ -6,6 +6,7 @@ import productRouter from "./routes/productRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import orderRouter from "./routes/orderRoutes.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,5 +20,6 @@ app.route("/").get((req, res) => {
 });
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/product", productRouter);
+app.use("/api/v1/order", orderRouter);
 
 app.use(errorMiddleware);
