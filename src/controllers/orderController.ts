@@ -3,7 +3,6 @@ import Order, { CreateOrderFormTypes, UpdateOrderFormTypes } from "../models/ord
 import { ErrorHandler } from "../utils/classes.js";
 import { sendResponse } from "../utils/functions.js";
 import { AuthRequest } from "../middlewares/auth.js";
-import mongoose, { Schema, Types } from "mongoose";
 
 
 export async function myOrders(req:Request, res:Response,next:NextFunction) {
@@ -13,9 +12,9 @@ export async function myOrders(req:Request, res:Response,next:NextFunction) {
         if (!userID) return next(new ErrorHandler("userID is undefined", 404));
 
         const myOrders = await Order.find({
-            userID:new mongoose.Schema.Types.ObjectId(userID)
+            userID
         });
-
+        
         sendResponse(res, 201, "", myOrders);
     } catch (error) {
         next(error);
