@@ -10,6 +10,7 @@ export type OrderStatusType = "pending"|"delivered"|"cancelled"|"returned";
 export type PaymentStatusType = "pending"|"success"|"failed"|"refunded";
 export type ModeOfPaymentType = "cod"|"card";
 export interface OrderTypes{
+    _id:mongoose.Types.ObjectId;
     userID:mongoose.Types.ObjectId;
     products:{
         productID:mongoose.Types.ObjectId;
@@ -76,6 +77,6 @@ const orderSchema = new mongoose.Schema<OrderTypes>({
     }
 }, {timestamps:true});
 
-const orderModel:Model<OrderTypes> = mongoose.models.order || mongoose.model("Order", orderSchema);
+const orderModel:Model<OrderTypes> = mongoose.models.Order || mongoose.model<OrderTypes>("Order", orderSchema);
 
 export default orderModel;
