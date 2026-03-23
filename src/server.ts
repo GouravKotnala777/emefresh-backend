@@ -1,7 +1,6 @@
 import app from "./app.js";
 import express from "express";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
-import cartRouter from "./routes/cartRoutes.js";
 import productRouter from "./routes/productRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import path from "path";
