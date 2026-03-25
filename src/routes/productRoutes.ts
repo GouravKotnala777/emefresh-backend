@@ -1,5 +1,5 @@
 import express from "express";
-import { allProducts, createProduct, deleteProduct, getSingleProduct, updateProduct, uploadProductImage, uploadProductPreviewImages } from "../controllers/productController.js";
+import { allProducts, createProduct, deleteProduct, getProductsWithTag, getSingleProduct, updateProduct, uploadProductImage, uploadProductPreviewImages } from "../controllers/productController.js";
 import { isUserAuthenticated } from "../middlewares/auth.js";
 import {upload} from "../middlewares/upload.js";
 
@@ -7,6 +7,7 @@ import {upload} from "../middlewares/upload.js";
 const productRouter = express.Router();
 
 productRouter.route("/all").get(allProducts);
+productRouter.route("/tag/:tagName").get(getProductsWithTag);
 productRouter.route("/single_product/:productID").get(getSingleProduct);
 productRouter.route("/create").post(isUserAuthenticated, createProduct);
 productRouter.route("/upload_image").post(upload.single("image"), uploadProductImage);

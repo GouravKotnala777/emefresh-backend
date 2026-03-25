@@ -30,9 +30,24 @@ export async function getSingleProduct(req:Request, res:Response, next:NextFunct
         next(error);
     }
 };
+export async function getProductsWithTag(req:Request, res:Response, next:NextFunction) {
+    try {
+        const {tagName} = req.params;
+
+        if (!tagName) return new ErrorHandler("tagName is undefined", 404);
+
+        const products = await Product.find({
+            tag:{$in:[tagName]}
+        });
+        sendResponse(res, 200, "", products);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
 export async function createProduct(req:Request<{}, {}, CreateProductBodyTypes, {}>, res:Response, next:NextFunction) {
     try {
-        const {name, price, description, category, weight, volume, tag} = req.body;
+        const {name, price, description, category, weight, volume, tag, warning} = req.body;
               
         if (!name || !price || !description || !category || !tag) return next(new ErrorHandler("all fields are required", 400));
 
@@ -40,8 +55,17 @@ export async function createProduct(req:Request<{}, {}, CreateProductBodyTypes, 
 
         if (existingProduct) return next(new ErrorHandler("product already exist", 401));
         
+        console.log(tag);
+
         const newProduct = await Product.create({
-            name, price, description, category, weight, volume, tag
+            name,
+            price,
+            description,
+            category,
+            weight,
+            volume,
+            tag:tag.split(","),
+            warning:warning?.split(",")
         });
         
         if (!newProduct) return next(new ErrorHandler("internal server error", 500));
