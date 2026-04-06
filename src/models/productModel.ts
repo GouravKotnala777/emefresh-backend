@@ -1,5 +1,11 @@
 import mongoose, { Model } from "mongoose";
 
+export interface NutritionalFactsTypes{
+    principle:string[];
+    vitamins:string[];
+    minerals:string[];
+};
+
 export interface ProductTypes {
     _id:mongoose.Schema.Types.ObjectId;
     name:string;
@@ -13,14 +19,9 @@ export interface ProductTypes {
     weight?: string;
     volume?: string;
     ingredients?: string[];
-    nutritionFacts?: {
-        servingSize: string;
-        servingsPerContainer: number;
-        protein: number;
-        carbs: number;
-        fat: number;
-        calories: number;
-    };
+    nutritionFacts?: NutritionalFactsTypes;
+    servings:string;
+    experience:string;
     rating: number;
     avgRating:number;
     numReviews: number;
@@ -29,8 +30,8 @@ export interface ProductTypes {
     soldCount:number;
     returnCount:number;
 };
-export type CreateProductBodyTypes = Pick<ProductTypes, "name"|"price"|"description"|"category"|"weight"|"volume">&{tag:string; warning?:string;}
-export type UpdateProductBodyTypes = Partial<Pick<ProductTypes, "name"|"price"|"description"|"category"|"weight"|"volume"|"stock">>&{tag?:string; warning?:string;};
+export type CreateProductBodyTypes = Pick<ProductTypes, "name"|"price"|"description"|"category"|"weight"|"volume"|"servings"|"experience">&{tag:string; warning?:string; principle:string; vitamins:string; minerals:string;};
+export type UpdateProductBodyTypes = Partial<Pick<ProductTypes, "name"|"price"|"description"|"category"|"weight"|"volume"|"stock"|"servings"|"experience">>&{tag?:string; warning?:string; principle:string; vitamins:string; minerals:string;};
 
 const productSchema = new mongoose.Schema<ProductTypes>({
     name: { type: String, required: true, trim: true },
@@ -49,13 +50,12 @@ const productSchema = new mongoose.Schema<ProductTypes>({
     flavor: { type: String },
     ingredients: [{ type: String }],
     nutritionFacts: {
-      servingSize: { type: String },
-      servingsPerContainer: { type: Number },
-      protein: { type: Number },
-      carbs: { type: Number },
-      fat: { type: Number },
-      calories: { type: Number },
+        principle:[{type:String}],
+        vitamins:[{type:String}],
+        minerals:[{type:String}]
     },
+    servings: { type: String },
+    experience: { type: String },
     rating: { type: Number, default: 0 },
     avgRating: { type: Number, default: 0 },
     numReviews: { type: Number, default: 0 },

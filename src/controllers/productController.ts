@@ -47,9 +47,10 @@ export async function getProductsWithTag(req:Request, res:Response, next:NextFun
 };
 export async function createProduct(req:Request<{}, {}, CreateProductBodyTypes, {}>, res:Response, next:NextFunction) {
     try {
-        const {name, price, description, category, weight, volume, tag, warning} = req.body;
-              
-        if (!name || !price || !description || !category || !tag) return next(new ErrorHandler("all fields are required", 400));
+        const {name, price, description, category, weight, volume, tag, warning, servings, experience, principle, vitamins, minerals} = req.body;
+        console.log(servings, experience, principle, vitamins, minerals);
+        
+        if (!name || !price || !description || !category || !tag || !experience) return next(new ErrorHandler("all fields are required", 400));
 
         const existingProduct = await Product.findOne({name});
 
@@ -65,7 +66,15 @@ export async function createProduct(req:Request<{}, {}, CreateProductBodyTypes, 
             weight,
             volume,
             tag:tag.split(","),
-            warning:warning?.split(",")
+            warning:warning?.split(","),
+            servings,
+            experience,
+            nutritionFacts:{
+                principle:principle.length !== 0 ? principle.split(","):[],
+                vitamins:vitamins.length !== 0 ? vitamins.split(","):[],
+                minerals:minerals.length !== 0 ? minerals.split(","):[]
+            }
+            
         });
         
         if (!newProduct) return next(new ErrorHandler("internal server error", 500));
@@ -122,7 +131,7 @@ export async function uploadProductPreviewImages(req:Request, res:Response, next
 export async function updateProduct(req:Request<{productID:string;}, {}, UpdateProductBodyTypes, {}>, res:Response, next:NextFunction) {
     try {
         const {productID} = req.params;
-        const {name, price, description, category, weight, volume, stock, warning, tag} = req.body;
+        const {name, price, description, category, weight, volume, stock, warning, tag, servings, experience, principle, vitamins, minerals} = req.body;
 
         if (!productID) return next(new ErrorHandler("productID not found", 404));
         if (!name && !price && !description && !category && !weight && !volume && !stock && !warning && !tag) return next(new ErrorHandler("atleast one field is required", 400));
@@ -137,6 +146,11 @@ export async function updateProduct(req:Request<{productID:string;}, {}, UpdateP
             ...(stock&&{stock}),
             ...(warning&&{warning:warning.split(",")}),
             ...(tag&&{tag:tag.split(",")}),
+            ...(servings&&{servings}),
+            ...(experience&&{experience}),
+            ...(principle&&{principle:principle.split(",")}),
+            ...(vitamins&&{vitamins:vitamins.split(",")}),
+            ...(minerals&&{minerals:minerals.split(",")}),
         };
 
         const updatedProduct = await Product.findByIdAndUpdate(productID, bodyToUpdate, {new:true});
